@@ -1,67 +1,82 @@
-const express = require("express");
-const app = express();
-const path = require("path");
-const server = require("http").createServer(app);
-const io = require("socket.io")(server);
-const port = process.env.PORT || 3000;
+const express = require("express")const  express  =  require ( "express" ) ;
+	 aplicación  constante =  express ( ) ;
+	const  ruta  =  require ( "ruta" ) ;
+	 servidor  constante =  require ( "http" ) . createServer ( aplicación ) ;
+	const  io  =  require ( "socket.io" ) ( servidor ) ;
+	 puerto  constante =  proceso . env . PUERTO  ||  3000 ;
+	
 
-server.listen(port, () => {
-  console.log("Server listening at port", port);
-});
+	servidor . escuchar ( puerto ,  ( )  =>  {
+	  consola . log ( "Servidor escuchando en el puerto" ,  puerto ) ;
+	} ) ;
+	
 
-app.use(express.static(path.join(__dirname, "public")));
+	aplicación . use ( express . static ( ruta . join ( __dirname ,  "public" ) ) ) ;
+	
 
-// Chatroom
+	// Sala de chat
+	
 
-let numUsers = 0;
+	let  numUsers  =  0 ;
+	
 
-io.on("connection", (socket) => {
-  let addedUser = false;
+	io . on ( "conexión" ,  ( enchufe )  =>  {
+	  let  addedUser  =  falso ;
+	
 
-  socket.on("new message", (data) => {
-    // we tell the client to execute 'new message'
-    socket.broadcast.emit("new message", {
-      username: socket.username,
-      message: data,
-    });
-  });
+	  zócalo . on ( "mensaje nuevo" ,  ( datos )  =>  {
+	    // le decimos al cliente que ejecute 'nuevo mensaje'
+	    zócalo . difusión . emit ( "mensaje nuevo" ,  {
+	      nombre de usuario : socket . nombre de usuario ,
+	      mensaje : datos ,
+	    } ) ;
+	  } ) ;
+	
 
-  socket.on("add user", (username) => {
-    if (addedUser) return;
+	  zócalo . on ( "agregar usuario" ,  ( nombre de usuario )  =>  {
+	    if  ( addedUser )  return ;
+	
 
-    socket.username = username;
-    ++numUsers;
-    addedUser = true;
-    socket.emit("login", {
-      numUsers: numUsers,
-    });
+	    zócalo . nombre de usuario  =  nombre de usuario ;
+	    ++ numUsers ;
+	    addedUser  =  true ;
+	    zócalo . emit ( "iniciar sesión" ,  {
+	      numUsers : numUsers ,
+	    } ) ;
+	
 
-    socket.broadcast.emit("user joined", {
-      username: socket.username,
-      numUsers: numUsers,
-    });
-  });
+	    zócalo . difusión . emit ( "usuario unido" ,  {
+	      nombre de usuario : socket . nombre de usuario ,
+	      numUsers : numUsers ,
+	    } ) ;
+	  } ) ;
+	
 
-  socket.on("typing", () => {
-    socket.broadcast.emit("typing", {
-      username: socket.username,
-    });
-  });
+	  zócalo . on ( "escribiendo" ,  ( )  =>  {
+	    zócalo . difusión . emitir ( "escribiendo" ,  {
+	      nombre de usuario : socket . nombre de usuario ,
+	    } ) ;
+	  } ) ;
+	
 
-  socket.on("stop typing", () => {
-    socket.broadcast.emit("stop typing", {
-      username: socket.username,
-    });
-  });
+	  zócalo . on ( "asistente" ,  ( )  =>  {
+	    zócalo . difusión . emit ( "asistiendo" ,  {
+	      nombre de usuario : socket . nombre de usuario ,
+	    } ) ;
 
-  socket.on("disconnect", () => {
-    if (addedUser) {
-      --numUsers;
+	  zócalo . on ( "dejar de escribir" ,  ( )  =>  {
+	    zócalo . difusión . emit ( "deja de escribir" ,  {
+	      nombre de usuario : socket . nombre de usuario ,
+	    } ) ;
+	  } ) ;
 
-      socket.broadcast.emit("user left", {
-        username: socket.username,
-        numUsers: numUsers,
-      });
-    }
-  });
-});
+
+	
+
+	      zócalo . difusión . emit ( "usuario dejado" ,  {
+	        nombre de usuario : socket . nombre de usuario ,
+	        numUsers : numUsers ,
+	      } ) ;
+	    }
+	  } ) ;
+	} ) ;
